@@ -11,7 +11,7 @@ ENV LANG=en_US.utf8
 
 RUN apt-get update && apt-get install -y \
     build-essential autoconf automake libtool flex bison libssl-dev libz-dev \
-    libssl1.1 wget curl \
+    wget curl \
     && rm -rf /var/lib/apt/lists/*
 
 # install bazelisk
