@@ -9,7 +9,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 ENV LANG=en_US.utf8
 
-RUN apt-get update && apt-get install \
+RUN apt-get update && apt-get install -y \
     build-essential autoconf automake libtool flex bison libssl-dev libz-dev \
     libssl1.1 wget curl \
     && rm -rf /var/lib/apt/lists/*
