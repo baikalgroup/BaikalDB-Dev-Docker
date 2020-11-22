@@ -11,7 +11,7 @@ ENV LANG=en_US.utf8
 
 RUN apt-get update && apt-get install -y \
     build-essential autoconf automake libtool flex bison libssl-dev libz-dev \
-    wget curl \
+    wget curl git\
     && rm -rf /var/lib/apt/lists/*
 
 # install bazelisk
@@ -20,18 +20,10 @@ RUN wget https://github.com/bazelbuild/bazelisk/releases/download/v1.7.4/bazelis
     && chmod +x /usr/local/bin/bazelisk
 
 WORKDIR /root
-SHELL ["/bin/bash", "-c"]
-
-# Install git 2.25
-RUN wget -qO- https://github.com/git/git/archive/v2.25.0.tar.gz | tar zxf - -C ./ \
-  && cd git-2.25.0 \
-  && make configure \
-  && ./configure --prefix=/usr \
-  && make -j$(nproc) && make install \
-  && cd ../ && rm -rf git-2.25.0
 
 # Prepare Bazel Disk Cache
 RUN git clone --branch master --depth 1 https://github.com/baidu/BaikalDB.git \
+  && cd BaikalDB \
   && bazelisk build --disk_cache=/root/.cache //:all
 
 
