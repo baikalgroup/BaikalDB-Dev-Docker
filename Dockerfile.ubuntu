@@ -1,0 +1,26 @@
+ARG VERSION=20.04
+
+FROM ubuntu:${VERSION}
+
+ARG VERSION=20.04
+
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+ENV LANG=en_US.utf8
+
+RUN apt-get update && apt-get install \
+    build-essential autoconf automake libtool flex bison libssl-dev libz-dev \
+    libssl1.1 wget curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# install bazelisk
+RUN wget https://github.com/bazelbuild/bazelisk/releases/download/v1.7.4/bazelisk-linux-amd64 \
+    -O /usr/local/bin/bazelisk \
+    && chmod +x /usr/local/bin/bazelisk
+
+SHELL ["/bin/bash", "-c"]
+
+
+
+
