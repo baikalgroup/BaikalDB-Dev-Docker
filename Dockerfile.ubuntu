@@ -23,18 +23,18 @@ RUN wget https://github.com/bazelbuild/bazelisk/releases/download/v1.7.4/bazelis
     && chmod +x /usr/local/bin/bazelisk
 
 
-RUN mkdir ${WORKSPACE} output
+RUN mkdir ${WORKSPACE}
 
 WORKDIR ${WORKSPACE}
 
 # Prepare Bazel Cache
-RUN --mount=type=cache,target=${WORKSPACE}/.cache ,id=buildcache,sharing=locked \
+RUN --mount=type=cache,target=${WORKSPACE}/.cache,id=buildcache,sharing=locked \
   git clone --branch master --depth 1 https://github.com/baidu/BaikalDB.git \
   && cd BaikalDB \
   && env HOME=${WORKSPACE} USER=${WORKUSER} bazelisk build //:all
 
 RUN --mount=type=cache,target=${WORKSPACE}/.cache,id=buildcache,sharing=locked \ 
-    cd output  \
+    cd ${WORKSPACE}  \
     && tar cfz bazelcache.tgz -C ${WORKSPACE} .cache \
     && rm -rf ${WORKSPACE}/BaikalDB
 
