@@ -26,4 +26,8 @@ RUN git clone --branch master --depth 1 https://github.com/baidu/BaikalDB.git \
   && cd BaikalDB \
   && bazelisk build --disk_cache=/root/.cache //:all
 
+RUN tar cfz bazelcache.tgz -C /root .cache/bazel .cache/bazelisk
+RUN rm -rf /root/.cache
+
+
 
