@@ -27,16 +27,17 @@ RUN mkdir ${WORKSPACE}
 
 WORKDIR ${WORKSPACE}
 
+RUN git clone --branch master --depth 1 https://github.com/baidu/BaikalDB.git
 # Prepare Bazel Cache
 RUN --mount=type=cache,target=${WORKSPACE}/.cache,id=buildcache,sharing=locked \
-  git clone --branch master --depth 1 https://github.com/baidu/BaikalDB.git \
-  && cd BaikalDB \
+  cd BaikalDB \
   && env HOME=${WORKSPACE} USER=${WORKUSER} bazelisk build //:all
 
 RUN --mount=type=cache,target=${WORKSPACE}/.cache,id=buildcache,sharing=locked \ 
     cd ${WORKSPACE}  \
-    && tar cfz bazelcache.tgz -C ${WORKSPACE} .cache \
-    && rm -rf ${WORKSPACE}/BaikalDB
+    && tar cfz bazelcache.tgz -C ${WORKSPACE} .cache 
+
+RUN rm -rf ${WORKSPACE}/BaikalDB
 
 
 
