@@ -8,9 +8,9 @@ jobs:
     strategy:
       matrix:
         version:
-#          - 16.04
-          - 18.04
-#          - 20.04
+#           - 16.04
+#           - 18.04
+           - 20.04
     steps:
     - uses: actions/checkout@v2
     - name: Set up QEMU
