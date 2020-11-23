@@ -22,12 +22,15 @@ RUN wget https://github.com/bazelbuild/bazelisk/releases/download/v1.7.4/bazelis
 WORKDIR /root
 
 # Prepare Bazel Disk Cache
-RUN git clone --branch master --depth 1 https://github.com/baidu/BaikalDB.git \
+RUN --mount=type=cache,target=/root/.cache,id=bazeldiskcache,sharing=locked \
+  git clone --branch master --depth 1 https://github.com/baidu/BaikalDB.git \
   && cd BaikalDB \
   && bazelisk build --disk_cache=/root/.cache //:all
 
-RUN tar cfz bazelcache.tgz -C /root .cache/bazel .cache/bazelisk
-RUN rm -rf /root/.cache
+RUN --mount=type=cache,target=/root/.cache,id=bazeldiskcache,sharing=locked \ 
+    cd /root  \
+    && tar cfz bazelcache.tgz -C /root .cache/bazel .cache/bazelisk
+
 
 
 
