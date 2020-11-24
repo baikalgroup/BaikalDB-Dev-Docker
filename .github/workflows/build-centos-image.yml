@@ -33,7 +33,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         context: .
-        file: ./Dockerfile.ubuntu
+        file: ./Dockerfile.centos
         push: true
         build-args: |
             VERSION=${{ matrix.version }}
