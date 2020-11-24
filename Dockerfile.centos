@@ -1,6 +1,6 @@
-ARG VERSION=20.04
+ARG VERSION=6
 
-FROM ubuntu:${VERSION}
+FROM centos:${VERSION}
 
 ARG WORKUSER=work
 ARG WORKSPACE=/${WORKUSER}
@@ -10,16 +10,17 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 ENV LANG=en_US.utf8
 
-RUN apt-get update && apt-get install -y \
-    build-essential autoconf automake libtool flex bison libssl-dev libz-dev \
-    wget curl git\
-    && rm -rf /var/lib/apt/lists/*
+RUN yum update -y && yum install -y epel-release \
+  && yum install -y \
+   make automake gcc gcc-c++ kernel-devel autoconf libtool flex bison libssl-dev libz-dev \
+   wget curl git \
+  && yum clean all \
+  && rm -rf /var/cache/yum
 
 # install bazelisk
 RUN wget https://github.com/bazelbuild/bazelisk/releases/download/v1.7.4/bazelisk-linux-amd64 \
     -O /usr/local/bin/bazelisk \
     && chmod +x /usr/local/bin/bazelisk
-
 
 RUN mkdir ${WORKSPACE}
 
@@ -27,9 +28,10 @@ WORKDIR ${WORKSPACE}
 
 
 # Prepare Bazel Cache
-RUN --mount=type=cache,target=/work/.cache,id=buildcache,sharing=locked \
-    --mount=type=cache,target=/work/BaikalDB,id=gitcache,sharing=locked \
+RUN --mount=type=cache,target=${WORKSPACE}/.cache,id=buildcache,sharing=locked \
+    --mount=type=cache,target=${WORKSPACE}/BaikalDB,id=gitcache,sharing=locked \
   git clone --branch master --depth 1 https://github.com/baidu/BaikalDB.git \
   && cd BaikalDB \
   && env HOME=${WORKSPACE} USER=${WORKUSER} bazelisk build //:all \
   && tar cfz bazelcache.tgz -C ${WORKSPACE} .cache 
+  
