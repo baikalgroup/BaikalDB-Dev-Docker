@@ -27,6 +27,6 @@ WORKDIR ${WORKSPACE}
 # Prepare Bazel Cache
 RUN --mount=type=cache,target=/work/.cache,id=buildcache,sharing=locked \
     --mount=type=cache,target=/work/BaikalDB,id=gitcache,sharing=locked \
-  git clone --branch master --depth 1 https://github.com/baidu/BaikalDB.git \
+  git clone --branch master --depth 1 https://github.com/lgqss/BaikalDB.git \
   && cd BaikalDB && env HOME=${WORKSPACE} USER=${WORKUSER} bazelisk build //:all \
   && cd ${WORKSPACE} && tar cfz bazelcache.tgz -C ${WORKSPACE} .cache 
