@@ -11,7 +11,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ENV LANG=en_US.utf8
 
 RUN apt-get update && apt-get install -y \
-    flex bison libssl-dev autoconf g++ libtool make cmake libz-dev\
+    flex bison libssl-dev autoconf g++ libtool make cmake libz-dev \
     wget curl git\
     && rm -rf /var/lib/apt/lists/*
 
@@ -20,11 +20,7 @@ RUN wget https://github.com/bazelbuild/bazelisk/releases/download/v1.7.4/bazelis
     -O /usr/local/bin/bazelisk \
     && chmod +x /usr/local/bin/bazelisk
 
-
-RUN mkdir ${WORKSPACE}
-
 WORKDIR ${WORKSPACE}
-
 
 # Prepare Bazel Cache
 RUN --mount=type=cache,target=/work/.cache,id=buildcache,sharing=locked \
