@@ -1,0 +1,30 @@
+ARG VERSION=20.04
+
+FROM ubuntu:${VERSION}
+
+ARG WORKUSER=work
+ARG WORKSPACE=/${WORKUSER}
+
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+ENV LANG=en_US.utf8
+
+RUN apt-get update && apt-get install -y \
+    flex bison libssl-dev autoconf g++ libtool make cmake libz-dev \
+    wget curl git\
+    && rm -rf /var/lib/apt/lists/*
+
+# install bazelisk
+RUN wget https://github.com/bazelbuild/bazelisk/releases/download/v1.7.4/bazelisk-linux-amd64 \
+    -O /usr/local/bin/bazelisk \
+    && chmod +x /usr/local/bin/bazelisk
+
+WORKDIR ${WORKSPACE}
+
+# Prepare Bazel Cache
+RUN --mount=type=cache,target=/work/.cache,id=buildcache,sharing=locked \
+    --mount=type=cache,target=/work/BaikalDB,id=gitcache,sharing=locked \
+  git clone --branch master --depth 1 https://github.com/baidu/BaikalDB.git \
+  && cd BaikalDB && env HOME=${WORKSPACE} USER=${WORKUSER} bazelisk build //:all \
+  && cd ${WORKSPACE} && tar cfz bazelcache.tgz -C ${WORKSPACE} .cache 
