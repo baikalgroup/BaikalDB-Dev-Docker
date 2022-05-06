@@ -9,7 +9,7 @@ jobs:
       matrix:
         version:
            - 7
-
+           - 8
     steps:
     - uses: actions/checkout@v2
     - name: Set up Docker Buildx
